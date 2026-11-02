@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <!-- No Index -->
+  <meta name="robots" content="noindex, noimageindex, nofollow" />
+  <meta name="googlebot" content="noindex, noimageindex, nofollow" />
+  <title>Teddy's Mardi Gras Ball</title>
+  <link rel="icon" type="image/png" href="images/favicon-mardi-gras.png">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-900 overflow-hidden no-select">
+
+  <div class="game-wrapper">
+    <div id="game-container" class="game-container">
+      <canvas id="game-canvas" class="game-canvas" width="256" height="240"></canvas>
+      <div id="story-overlay" class="story-overlay">
+        <img id="story-image" class="story-image" src="" alt="">
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Controls -->
+  <div id="mobile-controls" class="mobile-controls">
+    <!-- D-Pad (left side) -->
+    <div id="dpad" class="dpad-container">
+      <button class="dpad-btn dpad-up" data-dir="up">
+        <span class="dpad-arrow">&#9650;</span>
+      </button>
+      <button class="dpad-btn dpad-left" data-dir="left">
+        <span class="dpad-arrow">&#9664;</span>
+      </button>
+      <button class="dpad-btn dpad-center"></button>
+      <button class="dpad-btn dpad-right" data-dir="right">
+        <span class="dpad-arrow">&#9654;</span>
+      </button>
+      <button class="dpad-btn dpad-down" data-dir="down">
+        <span class="dpad-arrow">&#9660;</span>
+      </button>
+    </div>
+
+    <!-- Action Buttons (right side) -->
+    <div class="action-buttons">
+      <div class="action-btn-wrapper">
+        <button id="btn-a" class="action-btn action-btn-a">A</button>
+        <span class="action-label">Beads L</span>
+      </div>
+      <div class="action-btn-wrapper">
+        <button id="btn-b" class="action-btn action-btn-b">B</button>
+        <span class="action-label">Beads R</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
