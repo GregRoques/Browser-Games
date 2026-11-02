@@ -1272,7 +1272,7 @@ function setupTouchControls(inputState) {
 
     resetDpadInput(inputState);
 
-    if (dist < maxDist * 0.15) return;
+    if (dist < maxDist * 0.15 || dist > maxDist * 1.5) return;
 
     const angle = Math.atan2(dy, dx) * (180 / Math.PI);
     if (angle > -22.5 && angle <= 22.5) { inputState.right = true; }
@@ -1285,7 +1285,10 @@ function setupTouchControls(inputState) {
     else if (angle > -67.5 && angle <= -22.5) { inputState.right = true; inputState.up = true; }
   }
 
-  dpad.addEventListener('pointerdown', handleDpadPointer);
+  dpad.addEventListener('pointerdown', function(e) {
+    dpad.setPointerCapture(e.pointerId);
+    handleDpadPointer(e);
+  });
   dpad.addEventListener('pointermove', function(e) {
     if (e.pressure > 0) handleDpadPointer(e);
   });

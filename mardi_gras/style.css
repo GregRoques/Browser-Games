@@ -185,6 +185,11 @@
 
 /* ---------- Touch Device Responsive ---------- */
 @media (pointer: coarse), (hover: none) {
+  .game-wrapper {
+    align-items: flex-start;
+    padding-top: env(safe-area-inset-top, 8px);
+  }
+
   .game-container {
     width: min(95vw, 512px);
     max-height: 52vh;
@@ -230,6 +235,11 @@
 
 /* ---------- Landscape Mobile ---------- */
 @media (orientation: landscape) and (pointer: coarse) {
+  .game-wrapper {
+    align-items: center;
+    padding-top: 0;
+  }
+
   .game-container {
     max-height: 70vh;
     width: auto;
@@ -238,6 +248,15 @@
   .game-canvas {
     height: 70vh;
     width: auto;
+  }
+
+  .mobile-controls {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 16px;
+    align-items: center;
   }
 }
 
