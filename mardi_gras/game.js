@@ -1259,22 +1259,23 @@ function setupTouchControls(inputState) {
 
   if (!dpad || !btnA || !btnB) return;
 
-  // D-pad handling
-  function handleDpadPointer(e) {
-    e.preventDefault();
-    const rect = dpad.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
-    const dx = e.clientX - cx;
-    const dy = e.clientY - cy;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const maxDist = rect.width / 2;
+  // D-pad handling - use Touch API for reliable slide-to-change-direction
+  var activeDpadTouchId = null;
+
+  function handleDpadTouch(touch) {
+    var rect = dpad.getBoundingClientRect();
+    var cx = rect.left + rect.width / 2;
+    var cy = rect.top + rect.height / 2;
+    var dx = touch.clientX - cx;
+    var dy = touch.clientY - cy;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var maxDist = rect.width / 2;
 
     resetDpadInput(inputState);
 
     if (dist < maxDist * 0.15 || dist > maxDist * 1.5) return;
 
-    const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+    var angle = Math.atan2(dy, dx) * (180 / Math.PI);
     if (angle > -22.5 && angle <= 22.5) { inputState.right = true; }
     else if (angle > 22.5 && angle <= 67.5) { inputState.right = true; inputState.down = true; }
     else if (angle > 67.5 && angle <= 112.5) { inputState.down = true; }
@@ -1285,16 +1286,44 @@ function setupTouchControls(inputState) {
     else if (angle > -67.5 && angle <= -22.5) { inputState.right = true; inputState.up = true; }
   }
 
-  dpad.addEventListener('pointerdown', function(e) {
-    dpad.setPointerCapture(e.pointerId);
-    handleDpadPointer(e);
-  });
-  dpad.addEventListener('pointermove', function(e) {
-    if (e.pressure > 0) handleDpadPointer(e);
-  });
-  dpad.addEventListener('pointerup', function() { resetDpadInput(inputState); });
-  dpad.addEventListener('pointercancel', function() { resetDpadInput(inputState); });
-  dpad.addEventListener('pointerleave', function() { resetDpadInput(inputState); });
+  dpad.addEventListener('touchstart', function(e) {
+    e.preventDefault();
+    if (activeDpadTouchId === null) {
+      var touch = e.changedTouches[0];
+      activeDpadTouchId = touch.identifier;
+      handleDpadTouch(touch);
+    }
+  }, { passive: false });
+
+  dpad.addEventListener('touchmove', function(e) {
+    e.preventDefault();
+    for (var i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === activeDpadTouchId) {
+        handleDpadTouch(e.changedTouches[i]);
+        break;
+      }
+    }
+  }, { passive: false });
+
+  dpad.addEventListener('touchend', function(e) {
+    for (var i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === activeDpadTouchId) {
+        activeDpadTouchId = null;
+        resetDpadInput(inputState);
+        break;
+      }
+    }
+  }, { passive: false });
+
+  dpad.addEventListener('touchcancel', function(e) {
+    for (var i = 0; i < e.changedTouches.length; i++) {
+      if (e.changedTouches[i].identifier === activeDpadTouchId) {
+        activeDpadTouchId = null;
+        resetDpadInput(inputState);
+        break;
+      }
+    }
+  }, { passive: false });
 
   // Action buttons
   btnA.addEventListener('pointerdown', function(e) {
