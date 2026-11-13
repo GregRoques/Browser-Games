@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="GPTBot" content="noindex, nofollow">
+    <meta name="CCBot" content="noindex, nofollow">
+    <meta name="anthropic-index" content="disallow">
+    <title>Key Paw's Hanukkah Party</title>
+    <link rel="icon" href="images/key-paw-game.png" type="image/x-icon">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'hanukkah': {
+                            'dark': '#061a3e',
+                            'blue': '#0b3d91',
+                            'mid': '#1e5bb5',
+                            'light': '#4a90d9',
+                            'sky': '#7bb3e0',
+                            'gold': '#ffd700',
+                            'gold-light': '#ffe44d',
+                            'silver': '#c0c0c0',
+                        }
+                    },
+                    fontFamily: {
+                        'heading': ['Fredoka', 'sans-serif'],
+                        'body': ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="font-body bg-hanukkah-dark text-white overflow-hidden select-none">
+
+    <!-- ==================== TITLE SCREEN ==================== -->
+    <div id="title-screen" class="screen title-screen flex flex-col items-center justify-center min-h-screen relative">
+        <!-- Decorative Stars of David -->
+        <div class="star-float star-float-1" aria-hidden="true">&#x2721;</div>
+        <div class="star-float star-float-2" aria-hidden="true">&#x2721;</div>
+        <div class="star-float star-float-3" aria-hidden="true">&#x2721;</div>
+        <div class="star-float star-float-4" aria-hidden="true">&#x2721;</div>
+        <div class="star-float star-float-5" aria-hidden="true">&#x2721;</div>
+
+        <div class="title-content text-center z-10">
+            <h1 class="font-heading text-hanukkah-gold text-4xl md:text-6xl lg:text-7xl font-bold mb-6 title-glow">
+                Key Paw's<br>Hanukkah Party
+            </h1>
+
+            <div class="title-image-wrapper mx-auto mb-8">
+                <img src="images/player_1_key_paw.png"
+                     alt="Key Paw"
+                     class="title-image w-48 h-48 md:w-64 md:h-64 lg:w-80 lg:h-80 object-contain mx-auto drop-shadow-2xl">
+            </div>
+
+            <!-- Desktop: Press Return -->
+            <p id="start-prompt-desktop" class="hidden md:block text-hanukkah-gold-light text-xl md:text-2xl font-heading animate-pulse">
+                Press Return to Start
+            </p>
+
+            <!-- Mobile: Start Button -->
+            <button id="start-btn-mobile"
+                    class="inline-block md:hidden btn-hanukkah font-heading text-xl px-10 py-3 rounded-full">
+                Start
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== GAME SCREEN ==================== -->
+    <div id="game-screen" class="screen game-screen hidden min-h-screen">
+
+        <!-- ===== DESKTOP / HORIZONTAL LAYOUT ===== -->
+        <div class="game-layout-desktop hidden md:flex flex-col h-screen p-4 lg:p-6">
+            <!-- Top Players Row (dynamically populated) -->
+            <div class="flex justify-between items-start mb-2" id="desktop-players-top"></div>
+
+            <!-- Center Area: Dreidel (left) + Description (right) -->
+            <div class="flex flex-1 items-center justify-center gap-6 lg:gap-10 my-2">
+                <!-- Dreidel Area -->
+                <div class="dreidel-area flex flex-col items-center">
+                    <div class="pot-display font-heading mb-4">
+                        <span class="pot-label text-hanukkah-sky text-sm uppercase tracking-widest">Pot</span>
+                        <div class="pot-value flex items-center gap-2 text-hanukkah-gold text-3xl lg:text-4xl font-bold">
+                            <span class="coin-icon">&#x1FA99;</span>
+                            <span id="pot-count-desktop">0</span>
+                        </div>
+                    </div>
+                    <div class="dreidel-scene">
+                        <div class="dreidel-pivot" id="dreidel-desktop">
+                            <div class="dreidel-handle"></div>
+                            <div class="dreidel-body">
+                                <div class="dreidel-face dreidel-face-front">&#x05E0;</div>
+                                <div class="dreidel-face dreidel-face-right">&#x05D2;</div>
+                                <div class="dreidel-face dreidel-face-back">&#x05D4;</div>
+                                <div class="dreidel-face dreidel-face-left">&#x05E9;</div>
+                                <div class="dreidel-face dreidel-face-top"></div>
+                                <div class="dreidel-face dreidel-face-bottom"></div>
+                            </div>
+                            <div class="dreidel-point-wrapper">
+                                <div class="dreidel-point"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Description Panel -->
+                <div class="description-panel" id="desc-desktop">
+                    <p class="description-text font-body text-lg lg:text-xl" id="desc-text-desktop">
+                        Spin the dreidel to begin!
+                    </p>
+                </div>
+            </div>
+
+            <!-- Bottom Players Row (dynamically populated) -->
+            <div class="flex justify-between items-end mb-2" id="desktop-players-bottom"></div>
+
+            <!-- Action Bar -->
+            <div class="action-bar text-center py-3" id="action-bar-desktop">
+                <p class="spin-prompt font-heading text-hanukkah-gold-light text-xl lg:text-2xl animate-pulse"
+                   id="spin-prompt-desktop">
+                    Press any key to spin
+                </p>
+            </div>
+        </div>
+
+        <!-- ===== MOBILE / VERTICAL LAYOUT ===== -->
+        <div class="game-layout-mobile flex md:hidden flex-col h-screen p-3">
+            <!-- Pot Display -->
+            <div class="pot-display-mobile text-center py-2">
+                <span class="text-hanukkah-sky text-xs uppercase tracking-widest font-heading">Pot</span>
+                <div class="flex items-center justify-center gap-1 text-hanukkah-gold text-2xl font-bold font-heading">
+                    <span class="coin-icon">&#x1FA99;</span>
+                    <span id="pot-count-mobile">0</span>
+                </div>
+            </div>
+
+            <!-- Dreidel Area -->
+            <div class="dreidel-area-mobile flex items-center justify-center flex-shrink-0" style="min-height: 180px;">
+                <div class="dreidel-scene dreidel-scene-mobile">
+                    <div class="dreidel-pivot" id="dreidel-mobile">
+                        <div class="dreidel-handle"></div>
+                        <div class="dreidel-body">
+                            <div class="dreidel-face dreidel-face-front">&#x05E0;</div>
+                            <div class="dreidel-face dreidel-face-right">&#x05D2;</div>
+                            <div class="dreidel-face dreidel-face-back">&#x05D4;</div>
+                            <div class="dreidel-face dreidel-face-left">&#x05E9;</div>
+                            <div class="dreidel-face dreidel-face-top"></div>
+                            <div class="dreidel-face dreidel-face-bottom"></div>
+                        </div>
+                        <div class="dreidel-point-wrapper">
+                            <div class="dreidel-point"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Panel Mobile -->
+            <div class="description-panel-mobile text-center py-2 px-4" id="desc-mobile">
+                <p class="description-text font-body text-base" id="desc-text-mobile">
+                    Spin the dreidel to begin!
+                </p>
+            </div>
+
+            <!-- Players List (dynamically populated) -->
+            <div class="players-list flex-1 overflow-y-auto py-2 space-y-2" id="mobile-players-list"></div>
+
+            <!-- Action Bar Mobile -->
+            <div class="action-bar-mobile text-center py-3" id="action-bar-mobile">
+                <button class="btn-hanukkah font-heading text-lg px-8 py-3 rounded-full"
+                        id="spin-btn-mobile">
+                    Spin!
+                </button>
+                <p class="text-hanukkah-sky text-xs mt-1 font-body">or shake your phone</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/game.js"></script>
+    <script src="js/dreidel.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
